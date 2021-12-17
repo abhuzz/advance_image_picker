@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:advance_image_picker/advance_image_picker.dart';
+import 'package:advance_image_picker/configs/video_picker_configs.dart';
+import 'package:advance_image_picker/widgets/picker/video_picker.dart';
 import 'package:example/UiColors.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -70,11 +72,60 @@ class MyApp extends StatelessWidget {
 
   }
 
+  setupVideoPicker(){
+    // Setup image picker configs
+    final configs = VideoPickerConfigs();
+    // AppBar text color
+    configs.primaryColor = UiColors.primaryColor;
+    configs.appBarTextColor = UiColors.black;
+    configs.appBarBackgroundColor = UiColors.white;
+    configs.backgroundColor = UiColors.white;
+    configs.bottomPanelColor = UiColors.white;
+    configs.appBarDoneButtonColor = UiColors.primaryColor;
+    configs.filterFeatureEnabled = true;
+    configs.showFlashMode = false;
+    configs.iconClose = Icons.close_outlined;
+    configs.iconCamera = Icons.camera_outlined;
+    configs.bottomPanelIconColor = UiColors.black;
+    configs.bottomPanelIconColorInFullscreen = UiColors.white;
+    configs.albumCameraSwitchBackgroundColor = UiColors.white;
+    configs.albumCameraSwitchThumbColor = UiColors.primaryColor;
+
+    // Disable select images from album
+    // configs.albumPickerModeEnabled = false;
+    // Only use front camera for capturing
+    // configs.cameraLensDirection = 0;
+    // Translate function
+    configs.translateFunc = (name, value) => Intl.message(value, name: name);
+    // Disable edit function, then add other edit control instead
+    configs.adjustFeatureEnabled = false;
+    configs.externalImageEditors['external_image_editor_1'] = EditorParams(
+        title: 'Editor',
+        icon: Icons.edit_rounded,
+        onEditorEvent: (
+            {required BuildContext context,
+              required File file,
+              required String title,
+              int maxWidth = 1080,
+              int maxHeight = 1920,
+              int compressQuality = 90,
+              ImagePickerConfigs? configs}) async =>
+            Navigator.of(context).push(MaterialPageRoute<File>(
+                fullscreenDialog: true,
+                builder: (context) => ImageEdit(
+                    file: file,
+                    title: title,
+                    maxWidth: maxWidth,
+                    maxHeight: maxHeight,
+                    configs: configs))));
+  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     // Setup image picker config
     setupImagePicker();
+    setupVideoPicker();
 
     return MaterialApp(
       title: 'Flutter Demo',
@@ -139,15 +190,21 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           // Get max 5 images
-          final List<ImageObject>? objects = await Navigator.of(context)
-              .push(PageRouteBuilder(pageBuilder: (context, animation, __) {
-            return const ImagePicker(maxCount: 1, isCaptureFirst: false,);
-          }));
+          // final List<ImageObject>? objects = await Navigator.of(context)
+          //     .push(PageRouteBuilder(pageBuilder: (context, animation, __) {
+          //   return const ImagePicker(maxCount: 1, isCaptureFirst: false,);
+          // }));
+          //
+          // if ((objects?.length ?? 0) > 0) {
+          //   setState(() {
+          //     _imgObjs = objects!;
+          //   });
+          // }
 
-          if ((objects?.length ?? 0) > 0) {
-            setState(() {
-              _imgObjs = objects!;
-            });
+          var result = await Navigator.of(context)
+              .push(PageRouteBuilder(pageBuilder: (context, animation, __) => VideoPicker(cameraWidget: Icon(Icons.camera),)));
+          if(result != null) {
+            debugPrint('result ---> $result');
           }
         },
         child: const Icon(Icons.add),
