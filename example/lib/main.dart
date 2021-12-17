@@ -141,7 +141,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // Get max 5 images
           final List<ImageObject>? objects = await Navigator.of(context)
               .push(PageRouteBuilder(pageBuilder: (context, animation, __) {
-            return const ImagePicker(maxCount: 1);
+            return const ImagePicker(maxCount: 1, isCaptureFirst: false,);
           }));
 
           if ((objects?.length ?? 0) > 0) {

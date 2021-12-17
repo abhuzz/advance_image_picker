@@ -636,8 +636,8 @@ class _ImagePickerState extends State<ImagePicker>
       if (_mode == PickerMode.Camera)
         _isCameraPermissionOK
             ? Center(child: _buildCameraPreview(context))
-            // : _buildCameraRequestPermissionView(context)
-            : Center(child: CircularProgressIndicator(color: _configs.primaryColor, strokeWidth: 2,),)
+            : _buildCameraRequestPermissionView(context)
+            // : Center(child: CircularProgressIndicator(color: _configs.primaryColor, strokeWidth: 2,),)
       else
         _isGalleryPermissionOK
             ? _buildAlbumPreview(context)
