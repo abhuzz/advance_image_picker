@@ -98,12 +98,13 @@ class _ImageEditState extends State<ImageEdit>
             : colorScheme.onPrimary);
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: _configs.backgroundColor,
       appBar: AppBar(
         title: Text(widget.title),
         backgroundColor: _appBarBackgroundColor,
         foregroundColor: _appBarTextColor,
         actions: <Widget>[_buildDoneButton(context)],
+        elevation: 0,
       ),
       body: Column(
         mainAxisSize: MainAxisSize.min,
@@ -120,21 +121,21 @@ class _ImageEditState extends State<ImageEdit>
 
     if (_controlExpanded) {
       return Container(
-        color: const Color(0xFF212121),
+        color: _configs.backgroundColor,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  _controlExpanded = false;
-                });
-              },
-              child: Row(
-                  children: const [Spacer(), Icon(Icons.keyboard_arrow_down)]),
-            ),
-            const Divider(),
+            // GestureDetector(
+            //   onTap: () {
+            //     setState(() {
+            //       _controlExpanded = false;
+            //     });
+            //   },
+            //   child: Row(
+            //       children: const [Spacer(), Icon(Icons.keyboard_arrow_down)]),
+            // ),
+            // const Divider(),
             _buildContrastAdjustControl(context),
             _buildBrightnessAdjustControl(context),
             _buildSaturationAdjustControl(context)
@@ -186,7 +187,7 @@ class _ImageEditState extends State<ImageEdit>
   Widget _buildImageViewer(BuildContext context) {
     Widget imageView() => Container(
           padding: const EdgeInsets.all(12),
-          color: Colors.black,
+          color: _configs.backgroundColor,
           child: Image.memory(
             _imageBytes!,
             fit: BoxFit.contain,
@@ -264,7 +265,7 @@ class _ImageEditState extends State<ImageEdit>
   }
 
   Widget _buildContrastAdjustControl(BuildContext context) {
-    const textStyle = TextStyle(color: Colors.white, fontSize: 10);
+    const textStyle = TextStyle(color: Colors.black, fontSize: 14);
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -282,8 +283,8 @@ class _ImageEditState extends State<ImageEdit>
             max: 10,
             divisions: 40,
             value: _contrast,
-            activeColor: Colors.white,
-            inactiveColor: Colors.grey,
+            activeColor: _configs.primaryColor,
+            inactiveColor: Colors.grey[300],
             onChanged: (value) async {
               if (_contrast != value) {
                 setState(() {
@@ -300,7 +301,7 @@ class _ImageEditState extends State<ImageEdit>
   }
 
   Widget _buildBrightnessAdjustControl(BuildContext context) {
-    const textStyle = TextStyle(color: Colors.white, fontSize: 10);
+    const textStyle = TextStyle(color: Colors.black, fontSize: 14);
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -318,8 +319,8 @@ class _ImageEditState extends State<ImageEdit>
             max: 10,
             divisions: 40,
             value: _brightness,
-            activeColor: Colors.white,
-            inactiveColor: Colors.grey,
+            activeColor: _configs.primaryColor,
+            inactiveColor: Colors.grey[300],
             onChanged: (value) async {
               if (_brightness != value) {
                 setState(() {
@@ -336,7 +337,7 @@ class _ImageEditState extends State<ImageEdit>
   }
 
   Widget _buildSaturationAdjustControl(BuildContext context) {
-    const textStyle = TextStyle(color: Colors.white, fontSize: 10);
+    const textStyle = TextStyle(color: Colors.black, fontSize: 14);
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -354,8 +355,8 @@ class _ImageEditState extends State<ImageEdit>
             max: 10,
             divisions: 40,
             value: _saturation,
-            activeColor: Colors.white,
-            inactiveColor: Colors.grey,
+            activeColor: _configs.primaryColor,
+            inactiveColor: Colors.grey[300],
             onChanged: (value) async {
               if (_saturation != value) {
                 setState(() {

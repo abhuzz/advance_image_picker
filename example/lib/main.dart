@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
     final configs = ImagePickerConfigs();
     // AppBar text color
     configs.primaryColor = UiColors.primaryColor;
+    configs.appBarTitle = 'Create Post';
     configs.appBarTextColor = UiColors.black;
     configs.appBarBackgroundColor = UiColors.white;
     configs.backgroundColor = UiColors.white;
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
     configs.bottomPanelIconColorInFullscreen = UiColors.white;
     configs.albumCameraSwitchBackgroundColor = UiColors.white;
     configs.albumCameraSwitchThumbColor = UiColors.primaryColor;
+    configs.albumGridCount = 3;
 
     // Disable select images from album
     // configs.albumPickerModeEnabled = false;
@@ -49,26 +51,8 @@ class MyApp extends StatelessWidget {
     // Translate function
     configs.translateFunc = (name, value) => Intl.message(value, name: name);
     // Disable edit function, then add other edit control instead
-    configs.adjustFeatureEnabled = false;
-    configs.externalImageEditors['external_image_editor_1'] = EditorParams(
-        title: 'Editor',
-        icon: Icons.edit_rounded,
-        onEditorEvent: (
-            {required BuildContext context,
-              required File file,
-              required String title,
-              int maxWidth = 1080,
-              int maxHeight = 1920,
-              int compressQuality = 90,
-              ImagePickerConfigs? configs}) async =>
-            Navigator.of(context).push(MaterialPageRoute<File>(
-                fullscreenDialog: true,
-                builder: (context) => ImageEdit(
-                    file: file,
-                    title: title,
-                    maxWidth: maxWidth,
-                    maxHeight: maxHeight,
-                    configs: configs))));
+    configs.adjustFeatureEnabled = true;
+    configs.stickerFeatureEnabled = false;
 
   }
 
@@ -98,7 +82,8 @@ class MyApp extends StatelessWidget {
     // Translate function
     configs.translateFunc = (name, value) => Intl.message(value, name: name);
     // Disable edit function, then add other edit control instead
-    configs.adjustFeatureEnabled = false;
+    configs.adjustFeatureEnabled = true;
+    configs.stickerFeatureEnabled = false;
     configs.externalImageEditors['external_image_editor_1'] = EditorParams(
         title: 'Editor',
         icon: Icons.edit_rounded,
@@ -190,22 +175,22 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           // Get max 5 images
-          // final List<ImageObject>? objects = await Navigator.of(context)
-          //     .push(PageRouteBuilder(pageBuilder: (context, animation, __) {
-          //   return const ImagePicker(maxCount: 1, isCaptureFirst: false,);
-          // }));
-          //
-          // if ((objects?.length ?? 0) > 0) {
-          //   setState(() {
-          //     _imgObjs = objects!;
-          //   });
-          // }
+          final List<ImageObject>? objects = await Navigator.of(context)
+              .push(PageRouteBuilder(pageBuilder: (context, animation, __) {
+            return const ImagePickerUi(maxCount: 5, isCaptureFirst: false,);
+          }));
 
-          var result = await Navigator.of(context)
-              .push(PageRouteBuilder(pageBuilder: (context, animation, __) => VideoPicker(cameraWidget: Icon(Icons.camera),)));
-          if(result != null) {
-            debugPrint('result ---> $result');
+          if ((objects?.length ?? 0) > 0) {
+            setState(() {
+              _imgObjs = objects!;
+            });
           }
+
+          // var result = await Navigator.of(context)
+          //     .push(PageRouteBuilder(pageBuilder: (context, animation, __) => VideoPicker(cameraWidget: Icon(Icons.camera),)));
+          // if(result != null) {
+          //   debugPrint('result ---> $result');
+          // }
         },
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.

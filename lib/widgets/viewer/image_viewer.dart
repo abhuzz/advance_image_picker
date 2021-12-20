@@ -92,7 +92,7 @@ class _ImageViewerState extends State<ImageViewer>
     if (_configs.cropFeatureEnabled) {
       imageEditors[_configs.textImageCropTitle] = EditorParams(
           title: _configs.textImageCropTitle,
-          icon: Icons.crop_rotate,
+          icon: Icons.crop_outlined,
           onEditorEvent: (
                   {required BuildContext context,
                   required File file,
@@ -119,6 +119,8 @@ class _ImageViewerState extends State<ImageViewer>
                       toolbarWidgetColor: toolbarWidgetColor,
                       initAspectRatio: CropAspectRatioPreset.original,
                       activeControlsWidgetColor: _configs.primaryColor,
+                      backgroundColor: _configs.backgroundColor,
+                      cropFrameColor: _configs.backgroundColor,
                       lockAspectRatio: false),
                   iosUiSettings: const IOSUiSettings(
                     minimumAspectRatio: 1,
@@ -148,7 +150,7 @@ class _ImageViewerState extends State<ImageViewer>
     if (_configs.filterFeatureEnabled) {
       imageEditors[_configs.textImageFilterTitle] = EditorParams(
           title: _configs.textImageFilterTitle,
-          icon: Icons.auto_awesome,
+          icon: Icons.auto_fix_high_outlined,
           onEditorEvent: (
                   {required BuildContext context,
                   required File file,
@@ -194,7 +196,7 @@ class _ImageViewerState extends State<ImageViewer>
     // Create image editor icons
     return imageEditors.values
         .map((e) => GestureDetector(
-              child: Icon(e.icon, size: 32, color: Colors.white),
+              child: Icon(e.icon, color: Colors.grey),
               onTap: () async {
                 final image = await _imagePreProcessing(
                     _images[_currentIndex!].modifiedPath);
@@ -257,12 +259,14 @@ class _ImageViewerState extends State<ImageViewer>
             : colorScheme.onPrimary);
 
     return Scaffold(
-        backgroundColor: Colors.black,
+        // backgroundColor: Colors.black,
+        backgroundColor: _configs.backgroundColor,
         appBar: AppBar(
             title: Text("${widget.title} (${_currentIndex! + 1} "
                 "/ ${_images.length})"),
             backgroundColor: _appBarBackgroundColor,
             foregroundColor: _appBarTextColor,
+            elevation: 0,
             actions: [
               GestureDetector(
                 onTap: hasImages
@@ -306,8 +310,7 @@ class _ImageViewerState extends State<ImageViewer>
                     : null,
                 child: Padding(
                   padding: const EdgeInsets.all(8),
-                  child: Icon(Icons.delete,
-                      size: 32,
+                  child: Icon(Icons.delete_outline,
                       color:
                           hasImages ? _configs.appBarTextColor : Colors.grey),
                 ),
@@ -317,12 +320,12 @@ class _ImageViewerState extends State<ImageViewer>
           child: hasImages
               ? Column(children: [
                   _buildPhotoViewGallery(context),
-                  _buildReorderableSelectedImageList(context),
                   _buildEditorControls(
                     context,
                     _appBarBackgroundColor,
                     _appBarTextColor,
                   ),
+                  _buildReorderableSelectedImageList(context),
                 ])
               : Center(
                   child: Text(_configs.textNoImages,
@@ -348,11 +351,11 @@ class _ImageViewerState extends State<ImageViewer>
               onPageChanged: onPageChanged,
             ),
           ),
-          Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: _buildCurrentImageInfoView(context)),
+          // Positioned(
+          //     top: 0,
+          //     left: 0,
+          //     right: 0,
+          //     child: _buildCurrentImageInfoView(context)),
           if (_configs.ocrExtractFunc != null)
             Positioned(
                 bottom: 0,
@@ -393,7 +396,7 @@ class _ImageViewerState extends State<ImageViewer>
   Widget _buildReorderableSelectedImageList(BuildContext context) {
     Widget makeThumbnail(String? path) {
       return ClipRRect(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(8),
           child: Image.file(File(path!),
               fit: BoxFit.cover,
               width: _configs.thumbWidth.toDouble(),
@@ -416,12 +419,12 @@ class _ImageViewerState extends State<ImageViewer>
                       key: ValueKey(i.toString()),
                       margin: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
-                        color: Colors.grey,
+                        color: Colors.grey[300],
                         border: Border.all(
                             color: (i == _currentIndex)
-                                ? Colors.blue
-                                : Colors.white,
-                            width: 3),
+                                ? _configs.primaryColor
+                                : Colors.grey,
+                            width: 2),
                         borderRadius:
                             const BorderRadius.all(Radius.circular(10)),
                       ),
@@ -768,8 +771,7 @@ class _ImageViewerState extends State<ImageViewer>
               );
             }
           : null,
-      child: Icon(Icons.replay,
-          size: 32, color: imageChanged ? Colors.white : Colors.grey),
+      child: Icon(Icons.replay,  color: imageChanged ? Colors.black : Colors.grey),
     );
   }
 }

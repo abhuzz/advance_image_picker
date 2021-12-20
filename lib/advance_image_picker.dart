@@ -24,3 +24,4 @@ export 'widgets/editors/image_sticker.dart';
 
 /// Advanced image picker widget.
 export 'widgets/picker/image_picker.dart';
+export 'widgets/picker/image_picker_ui.dart';

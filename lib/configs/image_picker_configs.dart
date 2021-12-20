@@ -79,13 +79,13 @@ class ImagePickerConfigs {
 
   /// Thumbnail image width.
   ///
-  /// Defaults to 80.
-  int thumbWidth = 80;
+  /// Defaults to 100.
+  int thumbWidth = 100;
 
   /// Thumbnail image height.
   ///
-  /// Defaults to 80.
-  int thumbHeight = 80;
+  /// Defaults to 100.
+  int thumbHeight = 100;
 
   /// Thumbnail image width inside album grid view.
   ///
@@ -265,6 +265,13 @@ class ImagePickerConfigs {
   /// Defaults to [Colors.black] with 30% opacity.
   Color bottomPanelColorInFullscreen = Colors.black.withOpacity(0.3);
 
+  /// The Text title of the [AppBar] in the image picker.
+  ///
+  /// Defaults to empty.
+  /// This results in an AppBar title text with that follows current theme.
+  String appBarTitle = '';
+
+
   /// The background color of the [AppBar] in the image picker.
   ///
   /// Defaults to null.
@@ -289,7 +296,7 @@ class ImagePickerConfigs {
   ///
   /// Defaults to null.
   /// This results in [appBarBackgroundColor] being used.
-  Color? appBarDoneButtonColor;
+  Color? appBarDoneButtonColor = Colors.white;
 
   /// The type of button used on the image picker to select images and close
   /// the image picker.
@@ -545,19 +552,19 @@ class ImagePickerConfigs {
   ///
   /// Defaults to "contrast".
   String get textContrast =>
-      getTranslatedString("image_picker_image_edit_contrast", "contrast");
+      getTranslatedString("image_picker_image_edit_contrast", "Contrast");
 
   /// Get localized text for label "image_picker_image_edit_brightness".
   ///
   /// Defaults to "brightness".
   String get textBrightness =>
-      getTranslatedString("image_picker_image_edit_brightness", "brightness");
+      getTranslatedString("image_picker_image_edit_brightness", "Brightness");
 
   /// Get localized text for label "image_picker_image_edit_saturation".
   ///
   /// Defaults to "saturation".
   String get textSaturation =>
-      getTranslatedString("image_picker_image_edit_saturation", "saturation");
+      getTranslatedString("image_picker_image_edit_saturation", "Saturation");
 
   /// Get localized text for label "image_picker_ocr".
   ///

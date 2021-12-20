@@ -141,11 +141,12 @@ class _ImageFilterState extends State<ImageFilter>
             : colorScheme.onPrimary);
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: _configs.backgroundColor,
       appBar: AppBar(
         title: Text(widget.title),
         backgroundColor: _appBarBackgroundColor,
         foregroundColor: _appBarTextColor,
+        elevation: 0,
         actions: <Widget>[
           if (_loading)
             Container()
@@ -202,7 +203,7 @@ class _ImageFilterState extends State<ImageFilter>
                                   padding: const EdgeInsets.all(4),
                                   child: Text(_presetFilters[index].name,
                                       style:
-                                          const TextStyle(color: Colors.white)),
+                                          const TextStyle(color: Colors.black)),
                                 )
                               ],
                             ),
@@ -242,12 +243,12 @@ class _ImageFilterState extends State<ImageFilter>
       if (isThumbnail) {
         return Container(
           decoration: BoxDecoration(
-              color: Colors.grey,
+              // color: Colors.grey,
               border: Border.all(
-                  color: isSelected ? Colors.blue : Colors.white, width: 3),
-              borderRadius: const BorderRadius.all(Radius.circular(10))),
+                  color: isSelected ? _configs.primaryColor : Colors.white, width: 2),
+              borderRadius: const BorderRadius.all(Radius.circular(8))),
           child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(6),
               child: Image.memory(bytes!, fit: BoxFit.cover)),
         );
       } else {
