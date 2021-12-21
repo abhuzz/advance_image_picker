@@ -130,6 +130,9 @@ class _ImagePickerUiState extends State<ImagePickerUi>
   /// Key for current album object.
   final GlobalKey<MediaAlbumState> _currentAlbumKey = GlobalKey();
 
+  /// First thumbnail for gallery image
+  Uint8List? _firstThumbnail;
+
   /// Min available zoom ratio.
   double _minAvailableZoom = 1;
 
@@ -358,7 +361,13 @@ class _ImagePickerUiState extends State<ImagePickerUi>
         if (_albums.isNotEmpty) {
           final isAllAlbum = _albums.firstWhere((element) => element.isAll,
               orElse: () => _albums.first);
+
+          final f = await (await isAllAlbum.getAssetListRange(start: 0, end: 1))
+              .first
+              .thumbDataWithSize(
+                  _configs.albumThumbWidth, _configs.albumThumbHeight);
           setState(() {
+            _firstThumbnail = f;
             _currentAlbum = isAllAlbum;
           });
         }
@@ -482,17 +491,20 @@ class _ImagePickerUiState extends State<ImagePickerUi>
       onWillPop: _onWillPop,
       child: Scaffold(
           key: _scaffoldKey,
-          backgroundColor: _configs.backgroundColor,
           appBar: AppBar(
             title: _buildAppBarTitle(
               context,
-              _appBarBackgroundColor!,
+              _mode == PickerMode.Album
+                  ? _appBarBackgroundColor!
+                  : Colors.transparent,
               _appBarTextColor!,
             ),
             elevation: 0,
-            backgroundColor: _appBarBackgroundColor,
+            backgroundColor: _mode == PickerMode.Album
+                ? _appBarBackgroundColor
+                : Colors.transparent,
             foregroundColor: _appBarTextColor,
-            centerTitle: false,
+            centerTitle: true,
             actions: <Widget>[
               _buildDoneButton(context, _appBarDoneButtonColor),
             ],
@@ -636,42 +648,46 @@ class _ImagePickerUiState extends State<ImagePickerUi>
 
     final size = MediaQuery.of(context).size;
     final bottomHeight = (widget.maxCount == 1)
-        ? (kBottomControlPanelHeight - 40)
-        : kBottomControlPanelHeight;
+        ? (kBottomControlPanelHeight - 32)
+        : kBottomControlPanelHeight - 32;
 
-    return Stack(children: [
-      SizedBox(height: size.height, width: size.width),
-      if (_mode == PickerMode.Camera)
-        _isCameraPermissionOK
-            ? Center(child: _buildCameraPreview(context))
-            : _buildCameraRequestPermissionView(context)
-      // : Center(child: CircularProgressIndicator(color: _configs.primaryColor, strokeWidth: 2,),)
-      else
-        _isGalleryPermissionOK
-            ? _buildAlbumPreview(context)
-            : _builGalleryRequestPermissionView(context),
-      if (_mode == PickerMode.Camera) ...[
+    return Container(
+      color: _configs.backgroundColor,
+      child: Stack(children: [
+        SizedBox(height: size.height, width: size.width),
+        if (_mode == PickerMode.Camera)
+          _isCameraPermissionOK
+              ? Center(child: _buildCameraPreview(context))
+              : _buildCameraRequestPermissionView(context)
+        // : Center(child: CircularProgressIndicator(color: _configs.primaryColor, strokeWidth: 2,),)
+        else
+          _isGalleryPermissionOK
+              ? _buildAlbumPreview(context)
+              : _builGalleryRequestPermissionView(context),
+        if (_mode == PickerMode.Camera) ...[
+          Positioned(
+              bottom: bottomHeight.toDouble(),
+              left: 5,
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _exposureModeControlRowWidget(),
+                    _buildExposureButton(context),
+                  ])),
+          Positioned(
+              bottom: bottomHeight.toDouble(),
+              left: 0,
+              right: 0,
+              child: Center(child: _buildZoomRatioButton(context))),
+          Positioned(
+              bottom: bottomHeight.toDouble(),
+              right: 5,
+              child: _buildImageFullOption(context))
+        ],
         Positioned(
-            bottom: bottomHeight.toDouble(),
-            left: 5,
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              _exposureModeControlRowWidget(),
-              _buildExposureButton(context),
-            ])),
-        Positioned(
-            bottom: bottomHeight.toDouble(),
-            left: 0,
-            right: 0,
-            child: Center(child: _buildZoomRatioButton(context))),
-        Positioned(
-            bottom: bottomHeight.toDouble(),
-            right: 5,
-            child: _buildImageFullOption(context))
-      ],
-      Positioned(
-          bottom: 0, left: 0, right: 0, child: _buildBottomPanel(context))
-    ]);
+            bottom: 0, left: 0, right: 0, child: _buildBottomPanel(context))
+      ]),
+    );
   }
 
   /// Build zoom ratio button.
@@ -704,7 +720,7 @@ class _ImagePickerUiState extends State<ImagePickerUi>
         shape: const CircleBorder(),
       ),
       onPressed: _controller != null ? _onExposureModeButtonPressed : null,
-      child: Icon(_configs.iconExposure, color: Colors.white, size: 40),
+      child: Icon(_configs.iconExposure, color: Colors.white),
     );
   }
 
@@ -735,8 +751,7 @@ class _ImagePickerUiState extends State<ImagePickerUi>
           _isFullscreenImage
               ? _configs.iconFullScreenExit
               : _configs.iconFullScreen,
-          color: Colors.white,
-          size: 48),
+          color: Colors.white),
     );
   }
 
@@ -754,18 +769,20 @@ class _ImagePickerUiState extends State<ImagePickerUi>
           : _configs.bottomPanelColor,
       padding: const EdgeInsets.all(8),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
+        _buildCameraControls(context),
         if (widget.maxCount > 1) ...[
           Text(
               '$_textSelectedImagesTitle'
               '${_selectedImages.length.toString()}'
               ' / ${widget.maxCount.toString()}',
-              style: const TextStyle(color: Colors.white, fontSize: 14)),
+              style: TextStyle(
+                  color: _isFullscreenImage ? Colors.white : Colors.black,
+                  fontSize: 14)),
           if (_configs.textSelectedImagesGuide != '')
             Text(_configs.textSelectedImagesGuide,
                 style: const TextStyle(color: Colors.grey, fontSize: 14))
         ],
         _buildReorderableSelectedImageList(context),
-        _buildCameraControls(context),
         // Padding(
         //     padding: const EdgeInsets.all(8),
         //     child: _buildPickerModeList(context))
@@ -1349,7 +1366,7 @@ class _ImagePickerUiState extends State<ImagePickerUi>
 
     return _mode == PickerMode.Camera
         ? Container(
-            height: 60,
+            // height: 60,
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1371,13 +1388,32 @@ class _ImagePickerUiState extends State<ImagePickerUi>
                             .setFlashMode(_flashMode)
                             .then((value) => setState(() {}));
                       },
-                    )
-                  else
-                    // We use a transparent icon with no tap, to make
-                    // it take up same space as when it is there, to ensure
-                    // identical layout as when it is shown.
-                    Icon(_flashModeIcon(_flashMode),
-                        size: 32, color: Colors.transparent),
+                    ),
+                  GestureDetector(
+                    onTap: () async {
+                      if (_mode != PickerMode.Album &&
+                          (_albums.isEmpty || !_isGalleryPermissionOK)) {
+                        await _initPhotoGallery();
+                      }
+
+                      setState(() {
+                        _mode = PickerMode.Album;
+                      });
+                    },
+                    child: _firstThumbnail != null
+                        ? Container(
+                            width: 46,
+                            height: 46,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: MemoryImage(_firstThumbnail!,))),)
+                        : const SizedBox(
+                            width: 46,
+                            height: 46,
+                          ),
+                  ),
                   GestureDetector(
                     onTapDown: !isMaxCount
                         ? (td) {
@@ -1459,8 +1495,10 @@ class _ImagePickerUiState extends State<ImagePickerUi>
                             }
                           }
                         : null,
-                    child: Icon(_configs.iconCamera,
-                        size: (64 + (_isCapturing ? (-10) : 0)).toDouble(),
+                    child: Icon(
+                        Icons.radio_button_off_outlined, // _configs.iconCamera,
+                        // size: (80 + (_isCapturing ? (-10) : 0)).toDouble(),
+                        size: 80,
                         color: !isMaxCount
                             ? _isFullscreenImage
                                 ? _configs.bottomPanelIconColorInFullscreen
@@ -1485,7 +1523,8 @@ class _ImagePickerUiState extends State<ImagePickerUi>
                             }
                           }
                         : null,
-                    child: Icon(_configs.iconSwitchCamera,
+                    child: Icon(
+                        Icons.flip_camera_ios, // _configs.iconSwitchCamera,
                         size: 32,
                         color: _configs.showLensDirection
                             ? (canSwitchCamera
