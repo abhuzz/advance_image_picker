@@ -1495,8 +1495,7 @@ class _ImagePickerUiState extends State<ImagePickerUi>
                             }
                           }
                         : null,
-                    child: Icon(
-                        Icons.radio_button_off_outlined, // _configs.iconCamera,
+                    child: Icon(_configs.iconCamera,
                         // size: (80 + (_isCapturing ? (-10) : 0)).toDouble(),
                         size: 80,
                         color: !isMaxCount
@@ -1523,8 +1522,7 @@ class _ImagePickerUiState extends State<ImagePickerUi>
                             }
                           }
                         : null,
-                    child: Icon(
-                        Icons.flip_camera_ios, // _configs.iconSwitchCamera,
+                    child: Icon(_configs.iconSwitchCamera,
                         size: 32,
                         color: _configs.showLensDirection
                             ? (canSwitchCamera
