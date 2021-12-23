@@ -44,11 +44,12 @@ import 'media_album.dart';
 /// rotation, cropping, and adding sticker as well as filters.
 class ImagePickerUi extends StatefulWidget {
   /// Default constructor for the photo and media image picker.
-  const ImagePickerUi(
+  ImagePickerUi(
       {final Key? key,
       this.maxCount = 10,
       this.isFullscreenImage = false,
       this.isCaptureFirst = true,
+      this.images,
       this.configs})
       : super(key: key);
 
@@ -65,6 +66,7 @@ class ImagePickerUi extends StatefulWidget {
   /// Default mode for selecting image: capture new image or select
   /// image from album.
   final bool isCaptureFirst;
+  List<ImageObject>? images;
 
   @override
   _ImagePickerUiState createState() => _ImagePickerUiState();
@@ -175,6 +177,7 @@ class _ImagePickerUiState extends State<ImagePickerUi>
 
     // Setting preview screen mode from configuration
     if (widget.configs != null) _configs = widget.configs!;
+    if (widget.images != null) _selectedImages = widget.images!;
     _flashMode = _configs.flashMode;
     _isFullscreenImage = widget.isFullscreenImage;
     _mode = (widget.isCaptureFirst && _configs.cameraPickerModeEnabled)
