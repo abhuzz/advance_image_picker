@@ -201,7 +201,7 @@ class MediaAlbumState extends State<MediaAlbum> {
                             future: _getAssetThumbnail(asset),
                             builder: (BuildContext context, snapshot) {
                               if (snapshot.connectionState ==
-                                  ConnectionState.done) {
+                                  ConnectionState.done && snapshot.data != null) {
                                 return Image.memory(
                                   snapshot.data! as Uint8List,
                                   fit: BoxFit.cover,

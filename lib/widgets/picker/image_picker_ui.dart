@@ -559,28 +559,33 @@ class _ImagePickerUiState extends State<ImagePickerUi>
 
   /// Function used to select the images and close the image picker.
   Future<void> _doneButtonPressed() async {
-    setState(() {
-      _isOutputCreating = true;
-    });
-    // Compress selected images then return.
-    for (final f in _selectedImages) {
-      // Run image post processing
-      f.modifiedPath = (await _imagePostProcessing(f.modifiedPath)).path;
 
-      // Run label detector
-      if (_configs.labelDetectFunc != null && f.recognitions == null) {
-        f.recognitions = await _configs.labelDetectFunc!(f.modifiedPath);
-        if (f.recognitions?.isNotEmpty ?? false) {
-          f.label = f.recognitions!.first.label;
-        } else {
-          f.label = "";
+    var result = await openImageEditor();
+
+    if(result != null && result == true){
+      setState(() {
+        _isOutputCreating = true;
+      });
+      // Compress selected images then return.
+      for (final f in _selectedImages) {
+        // Run image post processing
+        f.modifiedPath = (await _imagePostProcessing(f.modifiedPath)).path;
+
+        // Run label detector
+        if (_configs.labelDetectFunc != null && f.recognitions == null) {
+          f.recognitions = await _configs.labelDetectFunc!(f.modifiedPath);
+          if (f.recognitions?.isNotEmpty ?? false) {
+            f.label = f.recognitions!.first.label;
+          } else {
+            f.label = "";
+          }
+          LogUtils.log("f.recognitions: ${f.recognitions}");
         }
-        LogUtils.log("f.recognitions: ${f.recognitions}");
       }
+      _isImageSelectedDone = true;
+      if (!mounted) return;
+      Navigator.of(context).pop(_selectedImages);
     }
-    _isImageSelectedDone = true;
-    if (!mounted) return;
-    Navigator.of(context).pop(_selectedImages);
   }
 
   // TODO(rydmike): The image picker uses a lot of Widget build functions.
@@ -1319,6 +1324,31 @@ class _ImagePickerUiState extends State<ImagePickerUi>
                         ))
               ]),
         ));
+  }
+
+  Future openImageEditor() async {
+   return await Navigator.of(context).push<void>(
+        PageRouteBuilder<dynamic>(
+            pageBuilder: (context, animation, __) {
+              _configs.imagePreProcessingBeforeEditingEnabled =
+              !_configs.imagePreProcessingEnabled;
+
+              return ImageViewer(
+                  title: _configs.textPreviewTitle,
+                  images: _selectedImages,
+                  initialIndex: 0,
+                  configs: _configs,
+                  onChanged: (dynamic value) {
+                    if (value is List<ImageObject>) {
+                      setState(() {
+                        _selectedImages = value;
+                      });
+                      _currentAlbumKey.currentState
+                          ?.updateStateFromExternal(
+                          selectedImages: _selectedImages);
+                    }
+                  });
+            }));
   }
 
   /// Return used IconData for corresponding FlashMode.
