@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
   /// Example app constructor.
   const MyApp({final Key? key}) : super(key: key);
 
-  setupImagePicker(){
+  setupImagePicker() {
     // Setup image picker configs
     final configs = ImagePickerConfigs();
     // AppBar text color
@@ -49,14 +49,83 @@ class MyApp extends StatelessWidget {
     // Only use front camera for capturing
     // configs.cameraLensDirection = 0;
     // Translate function
-    configs.translateFunc = (name, value) => Intl.message(value, name: name);
+    // configs.translateFunc = (name, value) => Intl.message(value, name: name);
+    configs.translateFunc = (name, value) {
+     if(name == "image_picker_select_images_title"){
+        return "Selected images count";
+      } else if(name == "image_picker_select_images_guide"){
+        return "You can drag images for sorting list...";
+      } else if(name == "image_picker_camera_title"){
+        return "Camera";
+      } else if(name == "image_picker_album_title"){
+        return "Album";
+      } else if(name == "image_picker_preview_title"){
+        return "Preview";
+      } else if(name == "image_picker_confirm"){
+        return "Confirm";
+      } else if(name == "image_picker_exit_without_selecting"){
+        return "Do you want to exit without selecting images?";
+      } else if(name == "image_picker_confirm_delete"){
+        return "Do you want to delete this image?";
+      } else if(name == "image_picker_confirm_reset_changes"){
+        return "Do you want to clear all changes for this image?";
+      } else if(name == "yes"){
+        return "Yes";
+      } else if(name == "no"){
+        return "No";
+      } else if(name == "save"){
+        return "Save";
+      } else if(name == "clear"){
+        return "Clear";
+      } else if(name == "image_picker_edit_text"){
+        return "Edit text";
+      } else if(name == "image_picker_no_images"){
+        return "No images ...";
+      } else if(name == "image_picker_image_crop_title"){
+        return "Image crop";
+      } else if(name == "image_picker_image_filter_title"){
+        return "Image filter";
+      } else if(name == "image_picker_image_edit_title"){
+        return "Image edit";
+      } else if(name == "image_picker_image_sticker_title"){
+        return "Image sticker";
+      } else if(name == "image_picker_image_addtext_title"){
+        return "Image add text";
+      } else if(name == "image_picker_select_button_title"){
+        return "Next";
+      } else if(name == "image_picker_image_sticker_guide"){
+        return "You can click on sticker icons to scale it or double click to "
+            "remove it from image";
+      } else if(name == "image_picker_exposure_title"){
+        return "Exposure";
+      } else if(name == "image_picker_exposure_locked_title"){
+        return "Locked";
+      } else if(name == "image_picker_exposure_auto_title"){
+        return "auto";
+      } else if(name == "image_picker_image_edit_contrast"){
+        return "Contrast";
+      } else if(name == "image_picker_image_edit_brightness"){
+        return "Brightness";
+      } else if(name == "image_picker_image_edit_saturation"){
+        return "Saturation";
+      } else if(name == "image_picker_ocr"){
+        return "OCR";
+      } else if(name == "image_picker_request_permission"){
+        return "Request Permission";
+      } else if(name == "image_picker_request_camera_permission"){
+        return "You need allow camera permission.";
+      } else if(name == "image_picker_request_gallery_permission"){
+        return "You need allow photo gallery permission.";
+      }
+
+      return Intl.message(value, name: name);
+    };
     // Disable edit function, then add other edit control instead
     configs.adjustFeatureEnabled = true;
     configs.stickerFeatureEnabled = false;
-
   }
 
-  setupVideoPicker(){
+  setupVideoPicker() {
     // Setup image picker configs
     final configs = VideoPickerConfigs();
     // AppBar text color
@@ -87,22 +156,22 @@ class MyApp extends StatelessWidget {
     configs.externalImageEditors['external_image_editor_1'] = EditorParams(
         title: 'Editor',
         icon: Icons.edit_rounded,
-        onEditorEvent: (
-            {required BuildContext context,
-              required File file,
-              required String title,
-              int maxWidth = 1080,
-              int maxHeight = 1920,
-              int compressQuality = 90,
-              ImagePickerConfigs? configs}) async =>
+        onEditorEvent: ({required BuildContext context,
+          required File file,
+          required String title,
+          int maxWidth = 1080,
+          int maxHeight = 1920,
+          int compressQuality = 90,
+          ImagePickerConfigs? configs}) async =>
             Navigator.of(context).push(MaterialPageRoute<File>(
                 fullscreenDialog: true,
-                builder: (context) => ImageEdit(
-                    file: file,
-                    title: title,
-                    maxWidth: maxWidth,
-                    maxHeight: maxHeight,
-                    configs: configs))));
+                builder: (context) =>
+                    ImageEdit(
+                        file: file,
+                        title: title,
+                        maxWidth: maxWidth,
+                        maxHeight: maxHeight,
+                        configs: configs))));
   }
 
   // This widget is the root of your application.
