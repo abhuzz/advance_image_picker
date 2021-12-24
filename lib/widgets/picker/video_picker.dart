@@ -351,6 +351,7 @@ class _VideoPickerState extends State<VideoPicker>
               album: _currentAlbum!,
               onImageSelected: (image) async {
                 LogUtils.log("[_buildAlbumPreview] onImageSelected start");
+                Navigator.pop(context);
               })
               : const SizedBox(),
         )
