@@ -1031,6 +1031,10 @@ class _ImagePickerUiState extends State<ImagePickerUi>
                         _selectedImages.add(image);
                       }
                     });
+
+                    if(widget.maxCount == 1){
+                      await _doneButtonPressed();
+                    }
                   })
               : const SizedBox(),
         ),
