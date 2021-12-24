@@ -24,7 +24,8 @@ class MediaAlbum extends StatefulWidget {
       this.albumThumbHeight = 200,
       this.selectedImages,
       this.preProcessing,
-      this.onImageSelected, this.checkBoxActiveColor})
+      this.onImageSelected,
+      this.checkBoxActiveColor})
       : super(key: key);
 
   /// Grid count.
@@ -156,7 +157,7 @@ class MediaAlbumState extends State<MediaAlbum> {
           final idx = _selectedImages.indexWhere(
               (element) => ImageUtils.isTheSameAsset(asset, element));
           final isMaxCount = _selectedImages.length >= widget.maxCount!;
-          final isSelectable = (idx >= 0) || !isMaxCount;
+          final isSelectable = widget.maxCount == 1 ? true : (idx >= 0) || !isMaxCount;
           final data = (_thumbnailCache.containsKey(asset.id))
               ? _thumbnailCache[asset.id]
               : null;
@@ -181,11 +182,16 @@ class MediaAlbumState extends State<MediaAlbum> {
                         assetId: asset.id);
 
                     setState(() {
+                      if (widget.maxCount == 1) {
+                        _selectedImages.clear();
+                      }
+
                       if (idx >= 0) {
                         _selectedImages.removeAt(idx);
                       } else {
                         _selectedImages.add(image);
                       }
+
                       _loadingAsset = "";
                     });
 
@@ -201,7 +207,8 @@ class MediaAlbumState extends State<MediaAlbum> {
                             future: _getAssetThumbnail(asset),
                             builder: (BuildContext context, snapshot) {
                               if (snapshot.connectionState ==
-                                  ConnectionState.done && snapshot.data != null) {
+                                      ConnectionState.done &&
+                                  snapshot.data != null) {
                                 return Image.memory(
                                   snapshot.data! as Uint8List,
                                   fit: BoxFit.cover,
@@ -213,18 +220,22 @@ class MediaAlbumState extends State<MediaAlbum> {
                           )
                         : Image.memory(data,
                             fit: BoxFit.cover, gaplessPlayback: true)),
-                if (!isSelectable)
-                  Positioned.fill(
-                      child: Container(
-                          color: Colors.grey.shade200.withOpacity(0.8))),
-                if (_loadingAsset == asset.id)
-                  const Positioned.fill(child: CupertinoActivityIndicator()),
-                if (idx >= 0)
-                  Positioned(
-                      top: 10,
-                      right: 10,
-                      child: Icon(Icons.check_circle,
-                          color: widget.checkBoxActiveColor ?? Colors.pinkAccent , size: 24))
+                if (widget.maxCount != 1) ...[
+                  if (!isSelectable)
+                    Positioned.fill(
+                        child: Container(
+                            color: Colors.grey.shade200.withOpacity(0.8))),
+                  if (_loadingAsset == asset.id)
+                    const Positioned.fill(child: CupertinoActivityIndicator()),
+                  if (idx >= 0)
+                    Positioned(
+                        top: 10,
+                        right: 10,
+                        child: Icon(Icons.check_circle,
+                            color:
+                                widget.checkBoxActiveColor ?? Colors.pinkAccent,
+                            size: 24))
+                ]
               ]),
             ),
           );

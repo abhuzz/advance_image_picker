@@ -264,34 +264,35 @@ class _ImageViewerState extends State<ImageViewer>
         // backgroundColor: Colors.black,
         backgroundColor: _configs.backgroundColor,
         appBar: AppBar(
-            title: Text("${widget.title} (${_currentIndex! + 1} "
-                "/ ${_images.length})"),
+            title: Text("${widget.title} ${_images.length > 1 ? '(${_currentIndex! + 1} / ${_images.length})':''}"),
             backgroundColor: _appBarBackgroundColor,
             foregroundColor: _appBarTextColor,
             elevation: 0,
             actions: [
               Padding(
                   padding: const EdgeInsets.all(8),
-                  child: OutlinedButton(
+                  child: TextButton(
                     onPressed: (_images.isNotEmpty)
                         ? () async {
                             Navigator.pop(context, true);
                           }
                         : null,
-                    style: ButtonStyle(
-                      elevation: MaterialStateProperty.all(0),
-                      // backgroundColor: MaterialStateProperty.all(
-                      //     _selectedImages.isNotEmpty ? buttonColor : Colors.grey),
-                      shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10))),
-                    ),
+                    // style: ButtonStyle(
+                    //   elevation: MaterialStateProperty.all(0),
+                    //   // backgroundColor: MaterialStateProperty.all(
+                    //   //     _selectedImages.isNotEmpty ? buttonColor : Colors.grey),
+                    //   shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    //       borderRadius: BorderRadius.circular(10))),
+                    // ),
                     child: Row(children: [
                       Text(_configs.textSelectButtonTitle,
                           style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
                               color: _images.isNotEmpty
                                   ? ((_appBarDoneButtonColor == Colors.white)
                                       ? Colors.grey
-                                      : Colors.black)
+                                      : _configs.primaryColor)
                                   : Colors.grey)),
                     ]),
                   )),
@@ -305,6 +306,7 @@ class _ImageViewerState extends State<ImageViewer>
                     _appBarBackgroundColor,
                     _appBarTextColor,
                   ),
+                  if(_images.length > 1)
                   _buildReorderableSelectedImageList(context),
                 ])
               : Center(
