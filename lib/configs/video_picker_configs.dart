@@ -277,6 +277,12 @@ class VideoPickerConfigs {
   /// This results in an AppBar text color that follows current theme.
   Color? appBarTextColor;
 
+  /// The Text title of the [AppBar] in the image picker.
+  ///
+  /// Defaults to empty.
+  /// This results in an AppBar title text with that follows current theme.
+  String appBarTitle = '';
+
   /// Primary color.
   ///
   /// Defaults to Blue.

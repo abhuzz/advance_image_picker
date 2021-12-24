@@ -102,6 +102,9 @@ class _VideoPickerState extends State<VideoPicker>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {}
 
+  Color? _appBarBackgroundColor;
+  Color? _appBarTextColor;
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -111,12 +114,12 @@ class _VideoPickerState extends State<VideoPicker>
     final ThemeData theme = Theme.of(context);
     final ColorScheme colorScheme = theme.colorScheme;
     final AppBarTheme appBarTheme = AppBarTheme.of(context);
-    final Color _appBarBackgroundColor = _configs.appBarBackgroundColor ??
+    _appBarBackgroundColor = _configs.appBarBackgroundColor ??
         appBarTheme.backgroundColor ??
         (colorScheme.brightness == Brightness.dark
             ? colorScheme.surface
             : colorScheme.primary);
-    final Color _appBarTextColor = _configs.appBarTextColor ??
+    _appBarTextColor = _configs.appBarTextColor ??
         appBarTheme.foregroundColor ??
         (colorScheme.brightness == Brightness.dark
             ? colorScheme.onSurface
@@ -128,15 +131,13 @@ class _VideoPickerState extends State<VideoPicker>
         appBar: AppBar(
           title: _buildAppBarTitle(
             context,
-            _appBarBackgroundColor,
-            _appBarTextColor,
+            _appBarBackgroundColor!,
+            _appBarTextColor!,
           ),
+          elevation: 0,
           backgroundColor: _appBarBackgroundColor,
           foregroundColor: _appBarTextColor,
-          centerTitle: false,
-          actions: [
-            if (widget.cameraWidget != null) widget.cameraWidget!,
-          ],
+          centerTitle: true,
         ),
         body: SafeArea(child: _buildBodyView(context)));
   }
@@ -147,45 +148,54 @@ class _VideoPickerState extends State<VideoPicker>
     Color appBarBackgroundColor,
     Color appBarTextColor,
   ) {
-    return GestureDetector(
-        onTap: () {
-          Navigator.of(context, rootNavigator: true)
-              .push<void>(PageRouteBuilder(
-                  pageBuilder: (context, animation, __) {
-                    return Scaffold(
-                        appBar: AppBar(
-                            title:
-                                _buildAlbumSelectButton(context, isPop: true),
-                            backgroundColor: appBarBackgroundColor,
-                            foregroundColor: appBarTextColor,
-                            centerTitle: false),
-                        body: Material(
-                            color: Colors.black,
-                            child: SafeArea(
-                              child: _buildAlbumList(_albums, context, (val) {
-                                Navigator.of(context).pop();
-                                setState(() {
-                                  _currentAlbum = val;
-                                });
-                                _currentAlbumKey.currentState
-                                    ?.updateStateFromExternal(
-                                        album: _currentAlbum);
-                              }),
-                            )));
-                  },
-                  fullscreenDialog: true));
-        },
-        child: _buildAlbumSelectButton(context));
+    return Text(_configs.appBarTitle,
+        style: TextStyle(color: _configs.appBarTextColor, fontSize: 16));
+    // return GestureDetector(
+    //     onTap: () {
+    //       Navigator.of(context, rootNavigator: true)
+    //           .push<void>(PageRouteBuilder(
+    //               pageBuilder: (context, animation, __) {
+    //                 return Scaffold(
+    //                     appBar: AppBar(
+    //                         title:
+    //                             _buildAlbumSelectButton(context, isPop: true),
+    //                         backgroundColor: appBarBackgroundColor,
+    //                         foregroundColor: appBarTextColor,
+    //                         centerTitle: false),
+    //                     body: Material(
+    //                         color: Colors.black,
+    //                         child: SafeArea(
+    //                           child: _buildAlbumList(_albums, context, (val) {
+    //                             Navigator.of(context).pop();
+    //                             setState(() {
+    //                               _currentAlbum = val;
+    //                             });
+    //                             _currentAlbumKey.currentState
+    //                                 ?.updateStateFromExternal(
+    //                                     album: _currentAlbum);
+    //                           }),
+    //                         )));
+    //               },
+    //               fullscreenDialog: true));
+    //     },
+    //     child: _buildAlbumSelectButton(context));
   }
 
   /// Build album select button.
-  Widget _buildAlbumSelectButton(BuildContext context, {bool isPop = false}) {
+  Widget _buildAlbumSelectButton(BuildContext context,
+      {bool isPop = false, bool isCameraMode = false}) {
+    if (isCameraMode) {
+      return Text(_configs.textCameraTitle,
+          style: TextStyle(color: _configs.appBarTextColor, fontSize: 16));
+    }
+
     final size = MediaQuery.of(context).size;
     final container = Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Colors.black.withOpacity(0.1)),
+      // decoration: BoxDecoration(
+      //     borderRadius: BorderRadius.circular(10),
+      //     color: Colors.black.withOpacity(0.1)),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -193,27 +203,26 @@ class _VideoPickerState extends State<VideoPicker>
               constraints: BoxConstraints(maxWidth: size.width / 2.5),
               child: Text(_currentAlbum?.name ?? "",
                   overflow: TextOverflow.ellipsis,
-                  style:
-                      TextStyle(color: _configs.appBarTextColor, fontSize: 16)),
+                  style: TextStyle(
+                      color: _configs.appBarTextColor,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold)),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 4),
-              child: Icon(
-                  isPop
-                      ? Icons.arrow_upward_outlined
-                      : Icons.arrow_downward_outlined,
-                  size: 16),
+              child: Icon(isPop ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                  color: Colors.grey, size: 24),
             )
           ],
         ));
 
     return isPop
         ? GestureDetector(
-            child: container,
-            onTap: () async {
-              Navigator.of(context).pop();
-            },
-          )
+      child: container,
+      onTap: () async {
+        Navigator.of(context).pop();
+      },
+    )
         : container;
   }
 
@@ -254,10 +263,13 @@ class _VideoPickerState extends State<VideoPicker>
                   final thumbnail = _albumThumbnails[i]!;
                   return InkWell(
                     child: ListTile(
-                        leading: SizedBox(
-                            width: 80,
-                            height: 80,
-                            child: Image.memory(thumbnail, fit: BoxFit.cover)),
+                        leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: SizedBox(
+                              width: 80,
+                              height: 80,
+                              child: Image.memory(thumbnail, fit: BoxFit.cover)),
+                        ),
                         title: Text(album.name,
                             style: TextStyle(color: _configs.appBarTextColor)),
                         subtitle: Text(album.assetCount.toString(),
@@ -325,19 +337,67 @@ class _VideoPickerState extends State<VideoPicker>
         ? (kBottomControlPanelHeight - 40)
         : kBottomControlPanelHeight;
 
-    return SizedBox(
-      height: MediaQuery.of(context).size.height - bottomHeight,
-      child: _currentAlbum != null
-          ? VideoAlbum(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildAlbumSelectionAndCameraButton(),
+        SizedBox(
+          height: MediaQuery.of(context).size.height - bottomHeight,
+          child: _currentAlbum != null
+              ? VideoAlbum(
               key: _currentAlbumKey,
               gridCount: _configs.albumGridCount,
               maxCount: maxCount,
               album: _currentAlbum!,
               onImageSelected: (image) async {
                 LogUtils.log("[_buildAlbumPreview] onImageSelected start");
-                Navigator.pop(context, image.originalPath);
               })
-          : const SizedBox(),
+              : const SizedBox(),
+        )
+      ],
     );
   }
+
+  Widget _buildAlbumSelectionAndCameraButton() {
+    return Row(
+      children: [
+        GestureDetector(
+            onTap: () {
+              Navigator.of(context, rootNavigator: true)
+                  .push<void>(PageRouteBuilder(
+                  pageBuilder: (context, animation, __) {
+                    return Scaffold(
+                        appBar: AppBar(
+                            title: _buildAlbumSelectButton(context,
+                                isPop: true),
+                            backgroundColor: _appBarBackgroundColor!,
+                            foregroundColor: _appBarTextColor!,
+                            elevation: 0,
+                            centerTitle: false),
+                        body: Material(
+                            color: Colors.black,
+                            child: SafeArea(
+                              child: _buildAlbumList(_albums, context,
+                                      (val) {
+                                    Navigator.of(context).pop();
+                                    setState(() {
+                                      _currentAlbum = val;
+                                    });
+                                    _currentAlbumKey.currentState
+                                        ?.updateStateFromExternal(
+                                        album: _currentAlbum);
+                                  }),
+                            )));
+                  },
+                  fullscreenDialog: true));
+            },
+            child: _buildAlbumSelectButton(context)),
+        Spacer(),
+        if (widget.cameraWidget != null) widget.cameraWidget!,
+        SizedBox(width: 16)
+      ],
+    );
+  }
+
+
 }

@@ -1053,6 +1053,7 @@ class _ImagePickerUiState extends State<ImagePickerUi>
                                           isPop: true),
                                       backgroundColor: _appBarBackgroundColor!,
                                       foregroundColor: _appBarTextColor!,
+                                      elevation: 0,
                                       centerTitle: false),
                                   body: Material(
                                       color: Colors.black,
@@ -1129,10 +1130,13 @@ class _ImagePickerUiState extends State<ImagePickerUi>
                   final thumbnail = _albumThumbnails[i]!;
                   return InkWell(
                     child: ListTile(
-                        leading: SizedBox(
-                            width: 80,
-                            height: 80,
-                            child: Image.memory(thumbnail, fit: BoxFit.cover)),
+                        leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: SizedBox(
+                              width: 80,
+                              height: 80,
+                              child: Image.memory(thumbnail, fit: BoxFit.cover)),
+                        ),
                         title: Text(album.name,
                             style: TextStyle(color: _configs.appBarTextColor)),
                         subtitle: Text(album.assetCount.toString(),

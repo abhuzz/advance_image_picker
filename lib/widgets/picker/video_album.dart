@@ -133,11 +133,12 @@ class VideoAlbumState extends State<VideoAlbum> {
   Widget build(BuildContext context) {
     final gridview = GridView.builder(
         shrinkWrap: true,
+        padding: const EdgeInsets.all(16),
         itemCount: _assets.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: widget.gridCount,
-            mainAxisSpacing: 2,
-            crossAxisSpacing: 2),
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8),
         itemBuilder: (BuildContext context, int index) {
           final asset = _assets[index];
           final idx = _selectedImages.indexWhere(
@@ -176,38 +177,42 @@ class VideoAlbumState extends State<VideoAlbum> {
                     widget.onImageSelected?.call(image);
                   }
                 : null,
-            child: Stack(fit: StackFit.passthrough, children: [
-              Positioned.fill(
-                  child: (data == null)
-                      ? FutureBuilder(
-                          future: _getAssetThumbnail(asset),
-                          builder: (BuildContext context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.done && snapshot.data != null) {
-                              return Image.memory(
-                                snapshot.data! as Uint8List,
-                                fit: BoxFit.cover,
-                              );
-                            }
-                            return const Center(
-                                child: CupertinoActivityIndicator());
-                          },
-                        )
-                      : Image.memory(data,
-                          fit: BoxFit.cover, gaplessPlayback: true)),
-              if (!isSelectable)
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: Stack(fit: StackFit.passthrough, children: [
                 Positioned.fill(
-                    child: Container(
-                        color: Colors.grey.shade200.withOpacity(0.8))),
-              if (_loadingAsset == asset.id)
-                const Positioned.fill(child: CupertinoActivityIndicator()),
-              // if (idx >= 0)
-              //   const Positioned(
-              //       top: 10,
-              //       right: 10,
-              //       child: Icon(Icons.check_circle,
-              //           color: Colors.pinkAccent, size: 24))
-            ]),
+                    child: (data == null)
+                        ? FutureBuilder(
+                            future: _getAssetThumbnail(asset),
+                            builder: (BuildContext context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.done && snapshot.data != null) {
+                                return Image.memory(
+                                  snapshot.data! as Uint8List,
+                                  fit: BoxFit.cover,
+                                );
+                              }
+                              return const Center(
+                                  child: CupertinoActivityIndicator());
+                            },
+                          )
+                        : Image.memory(data,
+                            fit: BoxFit.cover, gaplessPlayback: true)),
+                if (!isSelectable)
+                  Positioned.fill(
+                      child: Container(
+                          color: Colors.grey.shade200.withOpacity(0.8))),
+                if (_loadingAsset == asset.id)
+                  const Positioned.fill(child: CupertinoActivityIndicator()),
+                // if (idx >= 0)
+                //   const Positioned(
+                //       top: 10,
+                //       right: 10,
+                //       child: Icon(Icons.check_circle,
+                //           Icons.check_circle,
+                //           color: widget.checkBoxActiveColor ?? Colors.pinkAccent , size: 24))
+              ]),
+            ),
           );
         });
 
