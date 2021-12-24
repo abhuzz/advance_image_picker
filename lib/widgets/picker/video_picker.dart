@@ -298,7 +298,8 @@ class _VideoPickerState extends State<VideoPicker>
       SizedBox(height: size.height, width: size.width),
       _isGalleryPermissionOK
           ? _buildAlbumPreview(context)
-          : _builGalleryRequestPermissionView(context),
+          : Container()
+          // : _builGalleryRequestPermissionView(context),
     ]);
   }
 
