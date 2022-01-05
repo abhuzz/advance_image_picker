@@ -701,6 +701,7 @@ class _ImagePickerUiState extends State<ImagePickerUi>
               right: 5,
               child: _buildImageFullOption(context))
         ],
+        if(widget.maxCount > 1)
         Positioned(
             bottom: 0, left: 0, right: 0, child: _buildBottomPanel(context))
       ]),
@@ -1005,7 +1006,7 @@ class _ImagePickerUiState extends State<ImagePickerUi>
     LogUtils.log("[_buildAlbumPreview] start");
 
     final bottomHeight = (widget.maxCount == 1)
-        ? (kBottomControlPanelHeight - 40)
+        ? (kBottomControlPanelHeight - 108)
         : kBottomControlPanelHeight;
 
     return Column(
