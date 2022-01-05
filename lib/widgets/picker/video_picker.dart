@@ -335,7 +335,7 @@ class _VideoPickerState extends State<VideoPicker>
     LogUtils.log("[_buildAlbumPreview] start");
 
     final bottomHeight = (maxCount == 1)
-        ? (kBottomControlPanelHeight - 40)
+        ? (kBottomControlPanelHeight - 108)
         : kBottomControlPanelHeight;
 
     return Column(
