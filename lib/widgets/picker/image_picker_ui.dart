@@ -701,7 +701,7 @@ class _ImagePickerUiState extends State<ImagePickerUi>
               right: 5,
               child: _buildImageFullOption(context))
         ],
-        if(widget.maxCount > 1)
+        if(widget.maxCount > 1 || _mode == PickerMode.Camera)
         Positioned(
             bottom: 0, left: 0, right: 0, child: _buildBottomPanel(context))
       ]),
@@ -788,6 +788,7 @@ class _ImagePickerUiState extends State<ImagePickerUi>
       height: kBottomControlPanelHeight.toDouble(),
       padding: const EdgeInsets.all(8),
       child: Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, children: [
+        if (widget.maxCount > 1 || _mode == PickerMode.Camera)
         _buildCameraControls(context),
         if (widget.maxCount > 1) ...[
           Text(
@@ -795,7 +796,8 @@ class _ImagePickerUiState extends State<ImagePickerUi>
               '${_selectedImages.length.toString()}'
               ' / ${widget.maxCount.toString()}',
               style: TextStyle(
-                  color: _isFullscreenImage ? Colors.white : Colors.black,
+                  // color: _isFullscreenImage ? Colors.white : Colors.black,
+                  color: _mode == PickerMode.Camera ? _isFullscreenImage ? Colors.white : Colors.black : Colors.black,
                   fontSize: 14)),
           if (_configs.textSelectedImagesGuide != '')
             Text(_configs.textSelectedImagesGuide,
