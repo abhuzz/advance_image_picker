@@ -1150,7 +1150,7 @@ class _ImagePickerUiState extends State<ImagePickerUi>
                 itemCount: _albums.length,
                 itemBuilder: (context, i) {
                   final album = _albums[i];
-                  final thumbnail = _albumThumbnails[i]!;
+                  final thumbnail = _albumThumbnails == null || _albumThumbnails[i] == null ? null : _albumThumbnails[i];
                   return InkWell(
                     child: ListTile(
                         leading: ClipRRect(
@@ -1158,7 +1158,7 @@ class _ImagePickerUiState extends State<ImagePickerUi>
                           child: SizedBox(
                               width: 80,
                               height: 80,
-                              child:
+                              child: thumbnail == null ? const Icon(Icons.info_outline) :
                                   Image.memory(thumbnail, fit: BoxFit.cover)),
                         ),
                         title: Text(album.name,
