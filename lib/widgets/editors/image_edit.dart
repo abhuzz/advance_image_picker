@@ -203,7 +203,7 @@ class _ImageEditState extends State<ImageEdit>
               return imageView();
             } else {
               return const Center(
-                child: CupertinoActivityIndicator(),
+                child: CircularProgressIndicator(),
               );
             }
           });

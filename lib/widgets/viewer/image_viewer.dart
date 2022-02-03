@@ -518,7 +518,7 @@ class _ImageViewerState extends State<ImageViewer>
               ],
             );
           } else {
-            return const CupertinoActivityIndicator();
+            return const CircularProgressIndicator();
           }
         });
   }
@@ -670,7 +670,7 @@ class _ImageViewerState extends State<ImageViewer>
                 if (_isProcessing)
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 4),
-                    child: CupertinoActivityIndicator(),
+                    child: CircularProgressIndicator(),
                   )
               ]),
             ),

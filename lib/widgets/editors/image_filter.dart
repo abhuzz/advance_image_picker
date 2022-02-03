@@ -168,7 +168,7 @@ class _ImageFilterState extends State<ImageFilter>
         width: double.infinity,
         height: double.infinity,
         child: _loading
-            ? const CupertinoActivityIndicator()
+            ? const CircularProgressIndicator()
             : Column(
                 children: [
                   Expanded(
@@ -279,7 +279,7 @@ class _ImageFilterState extends State<ImageFilter>
               }
               return createWidget(snapshot.data as Uint8List?);
             default:
-              return const CupertinoActivityIndicator();
+              return const CircularProgressIndicator();
           }
         },
       );

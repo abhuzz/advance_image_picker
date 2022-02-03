@@ -637,14 +637,14 @@ class _ImagePickerUiState extends State<ImagePickerUi>
                 if (_isOutputCreating)
                   const Padding(
                     padding: EdgeInsets.all(4),
-                    child: CupertinoActivityIndicator(),
+                    child: CircularProgressIndicator(),
                   )
               ]),
             ));
       case DoneButtonStyle.iconButton:
         return IconButton(
           icon: _isOutputCreating
-              ? const CupertinoActivityIndicator()
+              ? const CircularProgressIndicator()
               : Icon(_configs.iconDone),
           onPressed: (_selectedImages.isNotEmpty)
               ? () async {
@@ -1026,6 +1026,7 @@ class _ImagePickerUiState extends State<ImagePickerUi>
                   selectedImages: _selectedImages,
                   preProcessing: _imagePreProcessing,
                   checkBoxActiveColor: _configs.primaryColor,
+                  primaryColor: _configs.primaryColor,
                   onImageSelected: (image) async {
                     LogUtils.log("[_buildAlbumPreview] onImageSelected start");
 
@@ -1173,7 +1174,7 @@ class _ImagePickerUiState extends State<ImagePickerUi>
           );
         } else {
           return const Center(
-            child: CupertinoActivityIndicator(),
+            child: CircularProgressIndicator(),
           );
         }
       },

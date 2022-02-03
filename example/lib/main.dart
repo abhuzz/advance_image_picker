@@ -297,22 +297,22 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           // Get max 5 images
-          final List<ImageObject>? objects = await Navigator.of(context)
-              .push(PageRouteBuilder(pageBuilder: (context, animation, __) {
-            return ImagePickerUi(maxCount: 10, isCaptureFirst: false, isFullscreenImage: true,);
-          }));
-          print(objects);
-          if ((objects?.length ?? 0) > 0) {
-            setState(() {
-              _imgObjs = objects!;
-            });
-          }
-
-          // var result = await Navigator.of(context)
-          //     .push(PageRouteBuilder(pageBuilder: (context, animation, __) => VideoPicker(cameraWidget: Icon(Icons.camera_alt_outlined),)));
-          // if(result != null) {
-          //   debugPrint('result ---> $result');
+          // final List<ImageObject>? objects = await Navigator.of(context)
+          //     .push(PageRouteBuilder(pageBuilder: (context, animation, __) {
+          //   return ImagePickerUi(maxCount: 10, isCaptureFirst: false, isFullscreenImage: true,);
+          // }));
+          // print(objects);
+          // if ((objects?.length ?? 0) > 0) {
+          //   setState(() {
+          //     _imgObjs = objects!;
+          //   });
           // }
+
+          var result = await Navigator.of(context)
+              .push(PageRouteBuilder(pageBuilder: (context, animation, __) => VideoPicker(cameraWidget: Icon(Icons.camera_alt_outlined),)));
+          if(result != null) {
+            debugPrint('result ---> $result');
+          }
         },
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.

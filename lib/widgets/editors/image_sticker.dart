@@ -135,7 +135,7 @@ class _ImageStickerState extends State<ImageSticker>
                           return _buildImageStack(context);
                         } else {
                           return const Center(
-                            child: CupertinoActivityIndicator(),
+                            child: CircularProgressIndicator(),
                           );
                         }
                       })

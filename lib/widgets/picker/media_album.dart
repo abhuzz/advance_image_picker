@@ -25,7 +25,7 @@ class MediaAlbum extends StatefulWidget {
       this.selectedImages,
       this.preProcessing,
       this.onImageSelected,
-      this.checkBoxActiveColor})
+      this.checkBoxActiveColor, this.primaryColor = Colors.grey})
       : super(key: key);
 
   /// Grid count.
@@ -60,6 +60,8 @@ class MediaAlbum extends StatefulWidget {
 
   /// Image selected checkbox color.
   final Color? checkBoxActiveColor;
+
+  final Color primaryColor;
 
   @override
   MediaAlbumState createState() => MediaAlbumState();
@@ -133,7 +135,7 @@ class MediaAlbumState extends State<MediaAlbum> {
 
       final List<AssetEntity> assets = [];
       for (final asset in ret) {
-        if (asset.type == AssetType.image) assets.add(asset);
+        if (asset.type == AssetType.image && asset.mimeType != 'application/octet-stream') assets.add(asset);
       }
 
       setState(() {
@@ -214,8 +216,8 @@ class MediaAlbumState extends State<MediaAlbum> {
                                   fit: BoxFit.cover,
                                 );
                               }
-                              return const Center(
-                                  child: CupertinoActivityIndicator());
+                              return Center(
+                                  child: CircularProgressIndicator(strokeWidth: 2, color: widget.primaryColor,));
                             },
                           )
                         : Image.memory(data,
@@ -226,7 +228,7 @@ class MediaAlbumState extends State<MediaAlbum> {
                         child: Container(
                             color: Colors.grey.shade200.withOpacity(0.8))),
                   if (_loadingAsset == asset.id)
-                    const Positioned.fill(child: CupertinoActivityIndicator()),
+                    Positioned.fill(child: CircularProgressIndicator(strokeWidth: 2, color: widget.primaryColor,)),
                   if (idx >= 0)
                     Positioned(
                         top: 10,

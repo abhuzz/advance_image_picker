@@ -604,14 +604,14 @@ class _ImagePickerState extends State<ImagePicker>
                 if (_isOutputCreating)
                   const Padding(
                     padding: EdgeInsets.all(4),
-                    child: CupertinoActivityIndicator(),
+                    child: CircularProgressIndicator(),
                   )
               ]),
             ));
       case DoneButtonStyle.iconButton:
         return IconButton(
           icon: _isOutputCreating
-              ? const CupertinoActivityIndicator()
+              ? const CircularProgressIndicator()
               : Icon(_configs.iconDone),
           onPressed: (_selectedImages.isNotEmpty)
               ? () async {
@@ -1043,7 +1043,7 @@ class _ImagePickerState extends State<ImagePicker>
           );
         } else {
           return const Center(
-            child: CupertinoActivityIndicator(),
+            child: CircularProgressIndicator(),
           );
         }
       },

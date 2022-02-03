@@ -39,7 +39,7 @@ class _VideoPickerState extends State<VideoPicker>
   List<Uint8List?> _albumThumbnails = [];
 
   /// Key for current album object.
-  final GlobalKey<MediaAlbumState> _currentAlbumKey = GlobalKey();
+  final GlobalKey<VideoAlbumState> _currentAlbumKey = GlobalKey();
 
   /// Global key for this screen.
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -281,8 +281,11 @@ class _VideoPickerState extends State<VideoPicker>
                 }),
           );
         } else {
-          return const Center(
-            child: CupertinoActivityIndicator(),
+          return Container(
+            color: _configs.backgroundColor,
+            child: const Center(
+              child: CircularProgressIndicator(),
+            ),
           );
         }
       },
@@ -350,6 +353,7 @@ class _VideoPickerState extends State<VideoPicker>
               gridCount: _configs.albumGridCount,
               maxCount: maxCount,
               album: _currentAlbum!,
+              primaryColor:_configs.primaryColor,
               onImageSelected: (image) async {
                 LogUtils.log("[_buildAlbumPreview] onImageSelected start");
                 Navigator.pop(context, image.originalPath);

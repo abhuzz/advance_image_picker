@@ -22,7 +22,7 @@ class VideoAlbum extends StatefulWidget {
       this.maxHeight = 720,
       this.albumThumbWidth = 200,
       this.albumThumbHeight = 200,
-      this.onImageSelected})
+      this.onImageSelected, this.primaryColor = Colors.grey})
       : super(key: key);
 
   /// Grid count.
@@ -48,6 +48,8 @@ class VideoAlbum extends StatefulWidget {
 
   /// Image selected event.
   final Function(ImageObject)? onImageSelected;
+
+  final Color primaryColor;
 
   @override
   VideoAlbumState createState() => VideoAlbumState();
@@ -120,7 +122,9 @@ class VideoAlbumState extends State<VideoAlbum> {
 
       final List<AssetEntity> assets = [];
       for (final asset in ret) {
-        if (asset.type == AssetType.video) assets.add(asset);
+        if (asset.type == AssetType.video){
+          debugPrint('asset.mimeType --> ${asset.mimeType}');
+          assets.add(asset);}
       }
 
       setState(() {
@@ -192,8 +196,8 @@ class VideoAlbumState extends State<VideoAlbum> {
                                   fit: BoxFit.cover,
                                 );
                               }
-                              return const Center(
-                                  child: CupertinoActivityIndicator());
+                              return Center(
+                                  child: CircularProgressIndicator(strokeWidth: 2, color: widget.primaryColor,));
                             },
                           )
                         : Image.memory(data,
@@ -203,7 +207,7 @@ class VideoAlbumState extends State<VideoAlbum> {
                       child: Container(
                           color: Colors.grey.shade200.withOpacity(0.8))),
                 if (_loadingAsset == asset.id)
-                  const Positioned.fill(child: CupertinoActivityIndicator()),
+                  Positioned.fill(child: CircularProgressIndicator(strokeWidth: 2, color: widget.primaryColor,)),
                 // if (idx >= 0)
                 //   const Positioned(
                 //       top: 10,
