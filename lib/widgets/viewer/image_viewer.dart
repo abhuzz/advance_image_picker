@@ -101,7 +101,7 @@ class _ImageViewerState extends State<ImageViewer>
                   int maxHeight = 1920,
                   int compressQuality = 90,
                   ImagePickerConfigs? configs}) async =>
-              ImageCropper.cropImage(
+              ImageCropper().cropImage(
                   sourcePath: file.path,
                   compressQuality: compressQuality,
                   maxWidth: maxWidth,
