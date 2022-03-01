@@ -492,7 +492,7 @@ class _ImagePickerState extends State<ImagePicker>
               _buildDoneButton(context, _appBarDoneButtonColor),
             ],
           ),
-          body: SafeArea(child: _buildBodyView(context))),
+          body: SafeArea(bottom: true,child: _buildBodyView(context))),
     );
   }
 
