@@ -112,9 +112,10 @@ class MediaAlbumState extends State<MediaAlbum> {
     if (_thumbnailCache.containsKey(asset.id)) {
       return _thumbnailCache[asset.id];
     } else {
-      final data = await asset.thumbDataWithSize(
-          widget.albumThumbWidth, widget.albumThumbHeight,
-          quality: 90);
+      // final data = await asset.thumbDataWithSize(
+      //     widget.albumThumbWidth, widget.albumThumbHeight,
+      //     quality: 90);
+      final data = await asset.thumbnailDataWithSize(ThumbnailSize(widget.albumThumbWidth, widget.albumThumbHeight),quality: 90);
       _thumbnailCache[asset.id] = data;
       return data;
     }

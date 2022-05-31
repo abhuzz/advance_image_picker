@@ -100,8 +100,35 @@ class _ImageViewerState extends State<ImageViewer>
                   int maxWidth = 1080,
                   int maxHeight = 1920,
                   int compressQuality = 90,
-                  ImagePickerConfigs? configs}) async =>
-              ImageCropper.cropImage(
+                  ImagePickerConfigs? configs}) async {
+
+            final CroppedFile? croppedFile = await ImageCropper().cropImage(
+              sourcePath: file.path,
+              aspectRatioPresets: [
+                CropAspectRatioPreset.square,
+                CropAspectRatioPreset.ratio3x2,
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.ratio4x3,
+                CropAspectRatioPreset.ratio16x9
+              ],
+              uiSettings: [
+                AndroidUiSettings(
+                    toolbarTitle: 'Cropper',
+                    toolbarColor: toolbarColor,
+                    toolbarWidgetColor: toolbarWidgetColor,
+                    initAspectRatio: CropAspectRatioPreset.original,
+                    lockAspectRatio: false),
+                IOSUiSettings(
+                  title: 'Cropper',
+                  minimumAspectRatio: 1,
+                ),
+              ],
+            );
+
+            final File result = File(croppedFile!.path);
+            return result;
+            /*
+             ImageCropper.cropImage(
                   sourcePath: file.path,
                   compressQuality: compressQuality,
                   maxWidth: maxWidth,
@@ -121,7 +148,10 @@ class _ImageViewerState extends State<ImageViewer>
                       lockAspectRatio: false),
                   iosUiSettings: const IOSUiSettings(
                     minimumAspectRatio: 1,
-                  )));
+                  ))
+            * */
+          }
+      );
     }
     if (_configs.adjustFeatureEnabled) {
       imageEditors[_configs.textImageEditTitle] = EditorParams(

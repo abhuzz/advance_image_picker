@@ -998,8 +998,11 @@ class _ImagePickerState extends State<ImagePicker>
       for (final a in _albums) {
         final f = await (await a.getAssetListRange(start: 0, end: 1))
             .first
-            .thumbDataWithSize(
-                _configs.albumThumbWidth, _configs.albumThumbHeight);
+        .thumbnailDataWithSize(
+            ThumbnailSize(_configs.albumThumbWidth, _configs.albumThumbHeight),
+            quality: 90);
+            // .thumbDataWithSize(
+            //     _configs.albumThumbWidth, _configs.albumThumbHeight);
         ret.add(f);
       }
       _albumThumbnails = ret;
