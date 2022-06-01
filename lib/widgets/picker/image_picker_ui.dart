@@ -367,8 +367,9 @@ class _ImagePickerUiState extends State<ImagePickerUi>
 
           final f = await (await isAllAlbum.getAssetListRange(start: 0, end: 1))
               .first
-              .thumbDataWithSize(
-                  _configs.albumThumbWidth, _configs.albumThumbHeight);
+          .thumbnailDataWithSize(ThumbnailSize(_configs.albumThumbWidth, _configs.albumThumbHeight));
+              // .thumbDataWithSize(
+              //     _configs.albumThumbWidth, _configs.albumThumbHeight);
           setState(() {
             _firstThumbnail = f;
             _currentAlbum = isAllAlbum;
@@ -1126,8 +1127,7 @@ class _ImagePickerUiState extends State<ImagePickerUi>
       for (final a in _albums) {
         final f = await (await a.getAssetListRange(start: 0, end: 1))
             .first
-            .thumbDataWithSize(
-                _configs.albumThumbWidth, _configs.albumThumbHeight);
+            .thumbnailDataWithSize(ThumbnailSize(_configs.albumThumbWidth, _configs.albumThumbHeight));
         ret.add(f);
       }
       _albumThumbnails = ret;

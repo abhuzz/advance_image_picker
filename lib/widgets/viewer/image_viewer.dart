@@ -100,31 +100,35 @@ class _ImageViewerState extends State<ImageViewer>
                   int maxWidth = 1080,
                   int maxHeight = 1920,
                   int compressQuality = 90,
-                  ImagePickerConfigs? configs}) async =>
-              ImageCropper().cropImage(
-                  sourcePath: file.path,
-                  compressQuality: compressQuality,
-                  maxWidth: maxWidth,
-                  maxHeight: maxHeight,
-                  aspectRatioPresets: [
-                    CropAspectRatioPreset.square,
-                    CropAspectRatioPreset.ratio3x2,
-                    CropAspectRatioPreset.original,
-                    CropAspectRatioPreset.ratio4x3,
-                    CropAspectRatioPreset.ratio16x9
-                  ],
-                  androidUiSettings: AndroidUiSettings(
-                      toolbarTitle: title,
-                      toolbarColor: toolbarColor,
-                      toolbarWidgetColor: toolbarWidgetColor,
-                      initAspectRatio: CropAspectRatioPreset.original,
-                      activeControlsWidgetColor: _configs.primaryColor,
-                      backgroundColor: _configs.backgroundColor,
-                      cropFrameColor: _configs.backgroundColor,
-                      lockAspectRatio: false),
-                  iosUiSettings: const IOSUiSettings(
-                    minimumAspectRatio: 1,
-                  )));
+                  ImagePickerConfigs? configs}) async {
+
+            final CroppedFile? croppedFile = await ImageCropper().cropImage(
+              sourcePath: file.path,
+              aspectRatioPresets: [
+                CropAspectRatioPreset.square,
+                CropAspectRatioPreset.ratio3x2,
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.ratio4x3,
+                CropAspectRatioPreset.ratio16x9
+              ],
+              uiSettings: [
+                AndroidUiSettings(
+                    toolbarTitle: 'Cropper',
+                    toolbarColor: toolbarColor,
+                    toolbarWidgetColor: toolbarWidgetColor,
+                    initAspectRatio: CropAspectRatioPreset.original,
+                    lockAspectRatio: false),
+                IOSUiSettings(
+                  title: 'Cropper',
+                  minimumAspectRatio: 1,
+                ),
+              ],
+            );
+
+            final File result = File(croppedFile!.path);
+            return result;
+          }
+      );
     }
     if (_configs.adjustFeatureEnabled) {
       imageEditors[_configs.textImageEditTitle] = EditorParams(
